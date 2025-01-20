@@ -1,45 +1,49 @@
-import { CORE_CONCEPTS } from "./data.js";
+import { CORE_CONCEPTS, EXAMPLES } from "./data.js";
 import Header from "./components/Header/Header.jsx";
 import CoreConcept from "./components/CoreConcept.jsx";
 import TabButton from "./components/TabButton.jsx";
+import { useState } from 'react';
 
 function App() {
+  const [selectedTopic, setSelectedTopic] = useState();
 
-  let tabContent = 'Please click a button.';
-
-  function handleSelect(selectedButton) { 
-    tabContent = selectedButton;
-
+  function handleSelect(selectedButton) {
+    setSelectedTopic(selectedButton);
   }
-  
+
+  let tabContent = <p>Please select a topic.</p>
+
+  if(selectedTopic){
+    tabContent = (<div id="tab-content">
+    <h3>{EXAMPLES[selectedTopic].title}</h3>
+    <p>{EXAMPLES[selectedTopic].description}</p>
+    <pre>
+      <code>
+        {EXAMPLES[selectedTopic].code}
+      </code>
+    </pre>
+  </div>
+  )}
+
   return (
     <div>
       <Header />
       <main>
         <section id="core-concepts">
-
-        <h2>Core concepts</h2>
-        <ul>
-          <CoreConcept 
-          title={CORE_CONCEPTS[0].title} 
-          description={CORE_CONCEPTS[0].description}
-          image={CORE_CONCEPTS[0].image}
-          /> 
-          <CoreConcept {...CORE_CONCEPTS[1]} />   
-          <CoreConcept {...CORE_CONCEPTS[2]} />   
-          <CoreConcept {...CORE_CONCEPTS[3]} />   
+          <h2>Core concepts</h2>
+          <ul>
+            {CORE_CONCEPTS.map((conceptItem) => <CoreConcept key={conceptItem.title} {...conceptItem} />)}
           </ul>
         </section>
         <section id="examples">
           <h2>Examples</h2>
           <menu>
-            <TabButton click={() => handleSelect('components')}>Components</TabButton>
-            <TabButton click={() => handleSelect('jsx')}>JSX</TabButton>
-            <TabButton click={() => handleSelect('props')}>Props</TabButton>
-            <TabButton click={() => handleSelect('state')}>State</TabButton>
-
+            <TabButton isCLicked={selectedTopic === 'components'} click={() => handleSelect('components')}>Components</TabButton>
+            <TabButton isCLicked={selectedTopic === 'jsx'} click={() => handleSelect('jsx')}>JSX</TabButton>
+            <TabButton isCLicked={selectedTopic === 'props'} click={() => handleSelect('props')}>Props</TabButton>
+            <TabButton isCLicked={selectedTopic === 'state'} click={() => handleSelect('state')}>State</TabButton>
           </menu>
-          {tabContent}
+            {tabContent}
         </section>
       </main>
     </div>

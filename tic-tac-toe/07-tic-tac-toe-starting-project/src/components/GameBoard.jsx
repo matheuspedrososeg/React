@@ -1,4 +1,5 @@
 import { useState } from "react"
+import App from "../App";
 
 const initialGameBoard = [
     [null, null, null],
@@ -6,33 +7,23 @@ const initialGameBoard = [
     [null, null, null],
 ]
 
-let count = 0;
+export default function GameBoard({ onSelectSquare, turns }) {
+let gameBoard = [...initialGameBoard];
 
-export default function GameBoard() {
-    const [gameBoard, setGameBoard] = useState(initialGameBoard);
-    
-    function handleSelectSquare(rowIndex, colIndex) {
-        count++;
-        console.log(count);
-        setGameBoard((prevGameBoard) => {
-            const updatedBoard = [...prevGameBoard.map(innerArray => [...innerArray])];
-            if(count % 2 == 0) {
-                updatedBoard[rowIndex][colIndex] = 'O';
-            } else {
-                updatedBoard[rowIndex][colIndex] = 'X';
-            }
-            return updatedBoard;
-        });
-    }
+for(const turn of turns) {
+    const {square, player} = turn;
+    const {row,col} = square;
 
+    gameBoard[row][col] = player;
+}
     return (
         <ol id="game-board">
-            {gameBoard.map((row, rowIndex) => (
+            {gameBoard.map((row, rowIndex) => ( 
                 <li key={rowIndex}>
                     <ol>
                         {row.map((playerSymbol, colIndex) => (
                             <li key={colIndex}>
-                                <button onClick={() => handleSelectSquare(rowIndex, colIndex)}>
+                                <button onClick={() => onSelectSquare(rowIndex, colIndex)}>
                                     {playerSymbol}
                                 </button>
                             </li>
